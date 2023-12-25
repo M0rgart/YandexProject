@@ -1,0 +1,2 @@
+# YandexProject
+pygame project
