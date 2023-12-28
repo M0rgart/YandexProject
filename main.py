@@ -12,6 +12,9 @@ pygame.init()
 pygame.key.set_repeat(200, 70)
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 clock = pygame.time.Clock()
+game_moment = "start"
+big_font = pygame.font.SysFont("comicsansms", 70)
+small_font = pygame.font.SysFont("kacstbook", 60)
 
 
 def terminate():
@@ -20,9 +23,28 @@ def terminate():
 
 #Стартовый экран, выбор персонажа или создание его
 def start_screen():
-    pass
+    game = big_font.render("Название игры",
+                           True, (255, 255, 255))
+    screen.blit(game,
+                (game.get_width() + 300, game.get_height() - 50))
 
-#Окно создания персонажа: информация про классы
+    ngButton = small_font.render("Начать игру",
+                                 True, (255, 255, 255))
+    screen.blit(ngButton,
+                (ngButton.get_width() + 820, 300 - ngButton.get_height()))
+
+    achievements = small_font.render("Достижения",
+                                     True, (255, 255, 255))
+    screen.blit(achievements,
+                (ngButton.get_width() + 805, 450 - ngButton.get_height()))
+
+    exit_button = small_font.render("Покинуть игру",
+                                     True, (255, 255, 255))
+    screen.blit(exit_button,
+                (exit_button.get_width() + 720,
+                 600 - exit_button.get_height()))
+
+#Окно сохдания персонажа: информация про классы
 def choose_class():
     pass
 
@@ -62,6 +84,9 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+
+    if game_moment == "start":
+        start_screen()
 
     pygame.display.flip()
     clock.tick(FPS)
