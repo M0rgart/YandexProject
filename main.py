@@ -36,6 +36,7 @@ def start_screen():
             pygame.sprite.Sprite.__init__(self)
             self.image = pygame.Surface((50, 50))
             self.image = pygame.image.load("newGame.png")
+            self.image.set_colorkey((0, 0, 0))
             self.rect = self.image.get_rect()
             self.rect.center = (1160, 250)
 
@@ -49,6 +50,7 @@ def start_screen():
             pygame.sprite.Sprite.__init__(self)
             self.image = pygame.Surface((50, 50))
             self.image = pygame.image.load("rewards.png")
+            self.image.set_colorkey((0, 0, 0))
             self.rect = self.image.get_rect()
             self.rect.center = (1150, 400)
 
@@ -62,6 +64,7 @@ def start_screen():
             pygame.sprite.Sprite.__init__(self)
             self.image = pygame.Surface((50, 50))
             self.image = pygame.image.load("exit.png")
+            self.image.set_colorkey((0, 0, 0))
             self.rect = self.image.get_rect()
             self.rect.center = (1130, 550)
 
