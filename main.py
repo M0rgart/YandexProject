@@ -16,7 +16,6 @@ game_moment = "start"
 big_font = pygame.font.SysFont("comicsansms", 70)
 small_font = pygame.font.SysFont("kacstbook", 60)
 
-
 def terminate():
     pygame.quit()
     sys.exit()
@@ -24,25 +23,57 @@ def terminate():
 #Стартовый экран, выбор персонажа или создание его
 def start_screen():
     game = big_font.render("Название игры",
-                           True, (255, 255, 255))
+                           True, (255, 165, 0))
     screen.blit(game,
-                (game.get_width() + 300, game.get_height() - 50))
+                (game.get_width() + 300,
+                 game.get_height() - 50))
 
-    ngButton = small_font.render("Начать игру",
-                                 True, (255, 255, 255))
-    screen.blit(ngButton,
-                (ngButton.get_width() + 820, 300 - ngButton.get_height()))
+    all_sprites = pygame.sprite.Group()
+    all_sprites.update()
 
-    achievements = small_font.render("Достижения",
-                                     True, (255, 255, 255))
-    screen.blit(achievements,
-                (ngButton.get_width() + 805, 450 - ngButton.get_height()))
+    class NewGameSprite(pygame.sprite.Sprite):
+        def __init__(self):
+            pygame.sprite.Sprite.__init__(self)
+            self.image = pygame.Surface((50, 50))
+            self.image = pygame.image.load("newGame.png")
+            self.rect = self.image.get_rect()
+            self.rect.center = (1160, 250)
 
-    exit_button = small_font.render("Покинуть игру",
-                                     True, (255, 255, 255))
-    screen.blit(exit_button,
-                (exit_button.get_width() + 720,
-                 600 - exit_button.get_height()))
+    all_sprites = pygame.sprite.Group()
+    NGS = NewGameSprite()
+    all_sprites.add(NGS)
+    all_sprites.draw(screen)
+
+    class Rev(pygame.sprite.Sprite):
+        def __init__(self):
+            pygame.sprite.Sprite.__init__(self)
+            self.image = pygame.Surface((50, 50))
+            self.image = pygame.image.load("rewards.png")
+            self.rect = self.image.get_rect()
+            self.rect.center = (1150, 400)
+
+    all_sprites = pygame.sprite.Group()
+    rev = Rev()
+    all_sprites.add(rev)
+    all_sprites.draw(screen)
+
+    class Exit(pygame.sprite.Sprite):
+        def __init__(self):
+            pygame.sprite.Sprite.__init__(self)
+            self.image = pygame.Surface((50, 50))
+            self.image = pygame.image.load("exit.png")
+            self.rect = self.image.get_rect()
+            self.rect.center = (1130, 550)
+
+    all_sprites = pygame.sprite.Group()
+    exit = Exit()
+    all_sprites.add(exit)
+    all_sprites.draw(screen)
+
+    pygame.display.flip()
+    clock.tick(FPS)
+
+
 
 #Окно сохдания персонажа: информация про классы
 def choose_class():
@@ -87,6 +118,14 @@ while running:
 
     if game_moment == "start":
         start_screen()
+    elif game_moment == "battle":
+        battle()
+    elif game_moment == "shop":
+        shop()
+    elif game_moment == "chest":
+        chest()
+    elif game_moment == "boss_battle":
+        boss_battle()
 
     pygame.display.flip()
     clock.tick(FPS)
