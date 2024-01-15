@@ -18,7 +18,9 @@ game_moment = "start"
 big_font = pygame.font.SysFont("comicsansms", 70)
 small_font = pygame.font.SysFont("kacstbook", 60)
 information = {"class": False, "Fiz_dmg": False, "hp": False, "defence": False,
-               "Mag_dmg": False, "LVL": False}
+               "Mag_dmg": False, "LVL": False, "max_hp": False}
+enemyInformation = {"Enemy_hp": 0, "Enemy_atc": 0, "Type": 0}
+money = 10
 room_num = 0
 location = 1
 
@@ -124,11 +126,25 @@ def choose():
             self.image = pygame.image.load("knight.png")
             self.image.set_colorkey((0, 0, 0))
             self.rect = self.image.get_rect()
-            self.rect.center = (screen.get_width() // 3, 300)
+            self.rect.center = (screen.get_width() // 6, 300)
 
     all_sprites = pygame.sprite.Group()
     kng = knight()
     all_sprites.add(kng)
+    all_sprites.draw(screen)
+
+    class hunter(pygame.sprite.Sprite):
+        def __init__(self):
+            pygame.sprite.Sprite.__init__(self)
+            self.image = pygame.Surface((50, 50))
+            self.image = pygame.image.load("hunter.png")
+            self.image.set_colorkey((0, 0, 0))
+            self.rect = self.image.get_rect()
+            self.rect.center = (screen.get_width() // 6 * 3, 300)
+
+    all_sprites = pygame.sprite.Group()
+    hnt = hunter()
+    all_sprites.add(hnt)
     all_sprites.draw(screen)
 
     class wizard(pygame.sprite.Sprite):
@@ -138,7 +154,7 @@ def choose():
             self.image = pygame.image.load("magic.png")
             self.image.set_colorkey((0, 0, 0))
             self.rect = self.image.get_rect()
-            self.rect.center = (screen.get_width() // 3 * 2, 300)
+            self.rect.center = (screen.get_width() // 6 * 5, 300)
 
     all_sprites = pygame.sprite.Group()
     wiz = wizard()
@@ -237,11 +253,20 @@ def battle():
     all_sprites = pygame.sprite.Group()
     all_sprites.update()
 
-    mob = random.randint(1, 1)
+    if enemyInformation["Type"] == 0:
+        enemyInformation["Type"] = random.randint(1, 2)
+        if enemyInformation["Type"] == 1:
+            enemyInformation["Enemy_hp"] = 25
+            enemyInformation["Enemy_atc"] = 3
+
+        elif enemyInformation["Type"] == 2:
+            enemyInformation["Enemy_hp"] = 50
+            enemyInformation["Enemy_atc"] = 1
 
     class Enemy(pygame.sprite.Sprite):
         def __init__(self):
             pygame.sprite.Sprite.__init__(self)
+            mob = enemyInformation["Type"]
             self.image = pygame.image.load(f'enemy{mob}.png')
             self.rect = self.image.get_rect()
             self.rect.center = (900, 600)
@@ -251,6 +276,7 @@ def battle():
             pygame.sprite.Sprite.__init__(self)
             self.image = pygame.image.load('background1.png')
             self.rect = self.image.get_rect()
+#todo
 
     all_sprites = pygame.sprite.Group()
     bcg = Tree()
@@ -261,6 +287,17 @@ def battle():
     enemy = Enemy()
     all_sprites.add(enemy)
     all_sprites.draw(screen)
+
+    Hp = big_font.render(str(information["hp"]), True,
+                               (150, 0, 0))
+    screen.blit(Hp, (300, 450))
+
+    enemy_hp = big_font.render(str(enemyInformation["Enemy_hp"]),
+                               True, (150, 0, 0))
+    screen.blit(enemy_hp, (1000, 450))
+
+    atc_btn = big_font.render("Атаковать", True, (255, 0, 0))
+    screen.blit(atc_btn, ((WIDTH - atc_btn.get_width()) // 2, 600))
 
     pygame.display.flip()
     clock.tick(FPS)
@@ -303,9 +340,11 @@ def room_generator():
 
 #Достижения
 def rewards():
-    screen.fill((0, 0, 0))
-    pygame.display.flip()
-    clock.tick(FPS)
+    information["LVL"] += 1
+    information["hp"] += 5
+    information["Fiz_dmg"] += 1
+    information["Mag_dmg"] += 1
+
 
 
 while running:
@@ -322,19 +361,45 @@ while running:
             elif game_moment == "choose":
                 if 0 <= mouse[0] <= (WIDTH // 3) and 200 <= mouse[1]:
                     information['class'] = "knight"
-                    print(information)
+                    information["Fiz_dmg"] = 10
+                    information["Mag_dmg"] = 0
+                    information["hp"] = 150
+                    information["defence"] = 5
+                    information["LVL"] = 1
                     game_moment = room_generator()
                 elif ((WIDTH // 3) <= mouse[0] <= (WIDTH // 3) * 2
                       and 200 <= mouse[1]):
                     information['class'] = "hunter"
-                    print(information)
+                    information["Fiz_dmg"] = 15
+                    information["Mag_dmg"] = 5
+                    information["hp"] = 120
+                    information["defence"] = 0
+                    information["LVL"] = 1
                     game_moment = room_generator()
                 elif (WIDTH // 3) * 2 <= mouse[0] <= WIDTH and 200 <= mouse[1]:
                     information['class'] = "mage"
-                    print(information)
+                    information["Fiz_dmg"] = 0
+                    information["Mag_dmg"] = 20
+                    information["hp"] = 100
+                    information["defence"] = 0
+                    information["LVL"] = 1
                     game_moment = room_generator()
                 else:
                     pass
+            elif game_moment == "battle":
+                if WIDTH // 2 - 125 <= mouse[0] <= WIDTH // 2 + 125 \
+                 and 625 <= mouse[1] <= 675:
+                    enemyInformation["Enemy_hp"] -= information["Fiz_dmg"]
+                    if enemyInformation["Enemy_hp"] <= 0:
+                        enemyInformation = {"Enemy_hp": 0, "Enemy_atc": 0,
+                                            "Type": 0}
+                        rewards()
+                        game_moment = room_generator()
+                    else:
+                        information["hp"] -= enemyInformation["Enemy_atc"]
+
+                    print(information)
+                    print(enemyInformation)
 
     if game_moment == "start":
         start_screen()
