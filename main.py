@@ -1,4 +1,3 @@
-import os
 import sys
 import pygame
 import random
@@ -24,12 +23,12 @@ money = 10
 room_num = 0
 location = 1
 
+
 def terminate():
     pygame.quit()
     sys.exit()
 
 
-#Стартовый экран, выбор персонажа или создание его
 def start_screen():
     all_sprites = pygame.sprite.Group()
     all_sprites.update()
@@ -61,8 +60,8 @@ def start_screen():
             self.rect.center = (1160, 250)
 
     all_sprites = pygame.sprite.Group()
-    NGS = NewGameSprite()
-    all_sprites.add(NGS)
+    ngs = NewGameSprite()
+    all_sprites.add(ngs)
     all_sprites.draw(screen)
 
     class Rev(pygame.sprite.Sprite):
@@ -89,15 +88,13 @@ def start_screen():
             self.rect.center = (1130, 550)
 
     all_sprites = pygame.sprite.Group()
-    exit = Exit()
-    all_sprites.add(exit)
+    all_sprites.add(Exit)
     all_sprites.draw(screen)
 
     pygame.display.flip()
     clock.tick(FPS)
 
 
-#выбор класса персонажа
 def choose():
     all_sprites = pygame.sprite.Group()
     all_sprites.update()
@@ -114,59 +111,55 @@ def choose():
     all_sprites.draw(screen)
 
     choose_class = big_font.render("выберете класс",
-                           True, (255, 0, 0))
+                                   True, (255, 0, 0))
     screen.blit(choose_class,
                 ((screen.get_width() - choose_class.get_width()) // 2,
                  10))
 
-    class knight(pygame.sprite.Sprite):
+    class ArturPirozhkov(pygame.sprite.Sprite):
         def __init__(self):
             pygame.sprite.Sprite.__init__(self)
             self.image = pygame.Surface((50, 50))
-            self.image = pygame.image.load("knight.png")
+            self.image = pygame.transform.scale(
+                pygame.image.load("Knight.png"), (275, 390))
             self.image.set_colorkey((0, 0, 0))
             self.rect = self.image.get_rect()
-            self.rect.center = (screen.get_width() // 6, 300)
+            self.rect.center = (500, 475)
 
     all_sprites = pygame.sprite.Group()
-    kng = knight()
-    all_sprites.add(kng)
+    pineapple = ArturPirozhkov()
+    all_sprites.add(pineapple)
     all_sprites.draw(screen)
 
-    class hunter(pygame.sprite.Sprite):
+    class Wizard(pygame.sprite.Sprite):
         def __init__(self):
             pygame.sprite.Sprite.__init__(self)
             self.image = pygame.Surface((50, 50))
-            self.image = pygame.image.load("hunter.png")
+            self.image = pygame.transform.scale(
+                pygame.image.load("mag.png"), (275, 390))
             self.image.set_colorkey((0, 0, 0))
             self.rect = self.image.get_rect()
-            self.rect.center = (screen.get_width() // 6 * 3, 300)
+            self.rect.center = (950, 475)
 
     all_sprites = pygame.sprite.Group()
-    hnt = hunter()
-    all_sprites.add(hnt)
+    all_sprites.add(Wizard)
     all_sprites.draw(screen)
 
-    class wizard(pygame.sprite.Sprite):
+    class Front(pygame.sprite.Sprite):
         def __init__(self):
             pygame.sprite.Sprite.__init__(self)
-            self.image = pygame.Surface((50, 50))
-            self.image = pygame.image.load("magic.png")
-            self.image.set_colorkey((0, 0, 0))
+            self.image = pygame.image.load('frontground.png')
+            self.image.set_colorkey((255, 255, 255))
             self.rect = self.image.get_rect()
-            self.rect.center = (screen.get_width() // 6 * 5, 300)
 
     all_sprites = pygame.sprite.Group()
-    wiz = wizard()
-    all_sprites.add(wiz)
+    all_sprites.add(Front)
     all_sprites.draw(screen)
 
     pygame.display.flip()
     clock.tick(FPS)
 
 
-#Окно инвенторя, возможность сменить оружие, увидеть статистику персонажа
-#распределение очков характеристик
 def open_inventory():
     all_sprites = pygame.sprite.Group()
     all_sprites.update()
@@ -186,7 +179,6 @@ def open_inventory():
     clock.tick(FPS)
 
 
-#Повышение уровня, +очки характеристик
 def lvl_up():
     all_sprites = pygame.sprite.Group()
     all_sprites.update()
@@ -206,8 +198,6 @@ def lvl_up():
     clock.tick(FPS)
 
 
-#Комната с сундуком, вначале рандомим редкость, затем предмет этой редкости
-#Можно сделать псеводорандом на предметы класса (мечнику мечи пдают чаще луков)
 def chest():
     all_sprites = pygame.sprite.Group()
     all_sprites.update()
@@ -227,8 +217,6 @@ def chest():
     clock.tick(FPS)
 
 
-#Комната с магазином, куить предметы или улучшить старые
-#сделать анимацию при выборе предметов
 def shop():
     all_sprites = pygame.sprite.Group()
     all_sprites.update()
@@ -248,20 +236,27 @@ def shop():
     clock.tick(FPS)
 
 
-#Бой, рандомный враг
 def battle():
     all_sprites = pygame.sprite.Group()
     all_sprites.update()
 
     if enemyInformation["Type"] == 0:
-        enemyInformation["Type"] = random.randint(1, 2)
+        enemyInformation["Type"] = random.randint(1, 4)
         if enemyInformation["Type"] == 1:
-            enemyInformation["Enemy_hp"] = 25
-            enemyInformation["Enemy_atc"] = 3
+            enemyInformation["Enemy_hp"] = 100
+            enemyInformation["Enemy_atc"] = 2
 
         elif enemyInformation["Type"] == 2:
+            enemyInformation["Enemy_hp"] = 25
+            enemyInformation["Enemy_atc"] = 10
+
+        elif enemyInformation["Type"] == 3:
             enemyInformation["Enemy_hp"] = 50
-            enemyInformation["Enemy_atc"] = 1
+            enemyInformation["Enemy_atc"] = 5
+
+        elif enemyInformation["Type"] == 4:
+            enemyInformation["Enemy_hp"] = 50
+            enemyInformation["Enemy_atc"] = 5
 
     class Enemy(pygame.sprite.Sprite):
         def __init__(self):
@@ -269,14 +264,13 @@ def battle():
             mob = enemyInformation["Type"]
             self.image = pygame.image.load(f'enemy{mob}.png')
             self.rect = self.image.get_rect()
-            self.rect.center = (900, 600)
+            self.rect.center = (WIDTH // 2, 600)
 
     class Tree(pygame.sprite.Sprite):
         def __init__(self):
             pygame.sprite.Sprite.__init__(self)
             self.image = pygame.image.load('background1.png')
             self.rect = self.image.get_rect()
-#todo
 
     all_sprites = pygame.sprite.Group()
     bcg = Tree()
@@ -289,7 +283,7 @@ def battle():
     all_sprites.draw(screen)
 
     Hp = big_font.render(str(information["hp"]), True,
-                               (150, 0, 0))
+                         (150, 0, 0))
     screen.blit(Hp, (300, 450))
 
     enemy_hp = big_font.render(str(enemyInformation["Enemy_hp"]),
@@ -297,13 +291,12 @@ def battle():
     screen.blit(enemy_hp, (1000, 450))
 
     atc_btn = big_font.render("Атаковать", True, (255, 0, 0))
-    screen.blit(atc_btn, ((WIDTH - atc_btn.get_width()) // 2, 600))
+    screen.blit(atc_btn, ((WIDTH - atc_btn.get_width()) // 2, 100))
 
     pygame.display.flip()
     clock.tick(FPS)
 
 
-#Битв с боссом, пропаботать интелект получше чем в обычном бою
 def boss_battle():
     all_sprites = pygame.sprite.Group()
     all_sprites.update()
@@ -314,7 +307,6 @@ def boss_battle():
             self.image = pygame.image.load('background1.png')
             self.rect = (1000, 500)
 
-    all_sprites = pygame.sprite.Group()
     bcg = Tree()
     all_sprites.add(bcg)
     all_sprites.draw(screen)
@@ -323,8 +315,6 @@ def boss_battle():
     clock.tick(FPS)
 
 
-#генератор комнат, попытка перерботать этжи. комнаты более рандомные чем
-#в определенном порядке
 def room_generator():
     if room_num == 10:
         return "boss_battle"
@@ -338,13 +328,12 @@ def room_generator():
             return "battle"
 
 
-#Достижения
 def rewards():
     information["LVL"] += 1
-    information["hp"] += 5
+    information["max_hp"] += 5
+    information["hp"] += 2
     information["Fiz_dmg"] += 1
     information["Mag_dmg"] += 1
-
 
 
 while running:
@@ -359,45 +348,44 @@ while running:
                 elif 1000 <= mouse[0] <= 1400 and 375 <= mouse[1] <= 425:
                     game_moment = "rewards"
             elif game_moment == "choose":
-                if 0 <= mouse[0] <= (WIDTH // 3) and 200 <= mouse[1]:
+                if 0 <= mouse[0] <= (WIDTH // 2) and 200 <= mouse[1]:
                     information['class'] = "knight"
                     information["Fiz_dmg"] = 10
                     information["Mag_dmg"] = 0
                     information["hp"] = 150
                     information["defence"] = 5
                     information["LVL"] = 1
+                    information["max_hp"] = 150
+                    information["defence"] = 3
                     game_moment = room_generator()
-                elif ((WIDTH // 3) <= mouse[0] <= (WIDTH // 3) * 2
-                      and 200 <= mouse[1]):
-                    information['class'] = "hunter"
-                    information["Fiz_dmg"] = 15
-                    information["Mag_dmg"] = 5
-                    information["hp"] = 120
-                    information["defence"] = 0
-                    information["LVL"] = 1
-                    game_moment = room_generator()
-                elif (WIDTH // 3) * 2 <= mouse[0] <= WIDTH and 200 <= mouse[1]:
+                elif WIDTH // 2 <= mouse[0] <= WIDTH and 200 <= mouse[1]:
                     information['class'] = "mage"
                     information["Fiz_dmg"] = 0
                     information["Mag_dmg"] = 20
                     information["hp"] = 100
                     information["defence"] = 0
                     information["LVL"] = 1
+                    information["max_hp"] = 100
                     game_moment = room_generator()
                 else:
                     pass
             elif game_moment == "battle":
                 if WIDTH // 2 - 125 <= mouse[0] <= WIDTH // 2 + 125 \
                  and 625 <= mouse[1] <= 675:
-                    enemyInformation["Enemy_hp"] -= information["Fiz_dmg"]
+                    if information["Fiz_dmg"] > information["Mag_dmg"]:
+                        enemyInformation["Enemy_hp"] -= information["Fiz_dmg"]
+                    else:
+                        enemyInformation["Enemy_hp"] -= information["Mag_dmg"]
                     if enemyInformation["Enemy_hp"] <= 0:
                         enemyInformation = {"Enemy_hp": 0, "Enemy_atc": 0,
                                             "Type": 0}
                         rewards()
                         game_moment = room_generator()
                     else:
-                        information["hp"] -= enemyInformation["Enemy_atc"]
-
+                        dmg = enemyInformation["Enemy_atc"] - \
+                              information["defence"]
+                        if dmg > 0:
+                            information["hp"] -= dmg
                     print(information)
                     print(enemyInformation)
 
