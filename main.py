@@ -88,7 +88,7 @@ def start_screen():
             self.rect.center = (1130, 550)
 
     all_sprites = pygame.sprite.Group()
-    all_sprites.add(Exit)
+    all_sprites.add(Exit())
     all_sprites.draw(screen)
 
     pygame.display.flip()
@@ -106,15 +106,39 @@ def choose():
             self.rect = self.image.get_rect()
 
     all_sprites = pygame.sprite.Group()
-    bcg = Tree()
-    all_sprites.add(bcg)
+    all_sprites.add(Tree())
     all_sprites.draw(screen)
-
     choose_class = big_font.render("выберете класс",
                                    True, (255, 0, 0))
     screen.blit(choose_class,
                 ((screen.get_width() - choose_class.get_width()) // 2,
                  10))
+
+    class Shadow(pygame.sprite.Sprite):
+        def __init__(self):
+            pygame.sprite.Sprite.__init__(self)
+            self.image = pygame.Surface((50, 50))
+            self.image = pygame.transform.scale(
+                pygame.image.load("shadow.png"), (350, 450))
+            self.rect = self.image.get_rect()
+            self.rect.center = (500, 550)
+
+    all_sprites = pygame.sprite.Group()
+    all_sprites.add(Shadow())
+    all_sprites.draw(screen)
+
+    class Shadow(pygame.sprite.Sprite):
+        def __init__(self):
+            pygame.sprite.Sprite.__init__(self)
+            self.image = pygame.Surface((50, 50))
+            self.image = pygame.transform.scale(
+                pygame.image.load("shadow.png"), (375, 375))
+            self.rect = self.image.get_rect()
+            self.rect.center = (975, 560)
+
+    all_sprites = pygame.sprite.Group()
+    all_sprites.add(Shadow())
+    all_sprites.draw(screen)
 
     class ArturPirozhkov(pygame.sprite.Sprite):
         def __init__(self):
@@ -122,7 +146,6 @@ def choose():
             self.image = pygame.Surface((50, 50))
             self.image = pygame.transform.scale(
                 pygame.image.load("Knight.png"), (275, 390))
-            self.image.set_colorkey((0, 0, 0))
             self.rect = self.image.get_rect()
             self.rect.center = (500, 475)
 
@@ -137,12 +160,11 @@ def choose():
             self.image = pygame.Surface((50, 50))
             self.image = pygame.transform.scale(
                 pygame.image.load("mag.png"), (275, 390))
-            self.image.set_colorkey((0, 0, 0))
             self.rect = self.image.get_rect()
-            self.rect.center = (950, 475)
+            self.rect.center = (975, 480)
 
     all_sprites = pygame.sprite.Group()
-    all_sprites.add(Wizard)
+    all_sprites.add(Wizard())
     all_sprites.draw(screen)
 
     class Front(pygame.sprite.Sprite):
@@ -153,7 +175,7 @@ def choose():
             self.rect = self.image.get_rect()
 
     all_sprites = pygame.sprite.Group()
-    all_sprites.add(Front)
+    all_sprites.add(Front())
     all_sprites.draw(screen)
 
     pygame.display.flip()
@@ -163,7 +185,6 @@ def choose():
 def open_inventory():
     all_sprites = pygame.sprite.Group()
     all_sprites.update()
-
     class Tree(pygame.sprite.Sprite):
         def __init__(self):
             pygame.sprite.Sprite.__init__(self)
@@ -171,8 +192,7 @@ def open_inventory():
             self.rect = self.image.get_rect()
 
     all_sprites = pygame.sprite.Group()
-    bcg = Tree()
-    all_sprites.add(bcg)
+    all_sprites.add(Tree())
     all_sprites.draw(screen)
 
     pygame.display.flip()
@@ -190,8 +210,7 @@ def lvl_up():
             self.rect = self.image.get_rect()
 
     all_sprites = pygame.sprite.Group()
-    bcg = Tree()
-    all_sprites.add(bcg)
+    all_sprites.add(Tree())
     all_sprites.draw(screen)
 
     pygame.display.flip()
@@ -209,8 +228,7 @@ def chest():
             self.rect = self.image.get_rect()
 
     all_sprites = pygame.sprite.Group()
-    bcg = Tree()
-    all_sprites.add(bcg)
+    all_sprites.add(Tree())
     all_sprites.draw(screen)
 
     pygame.display.flip()
