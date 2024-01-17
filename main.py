@@ -22,6 +22,7 @@ enemyInformation = {"Enemy_hp": 0, "Enemy_atc": 0, "Type": 0}
 money = 5
 room_num = 0
 location = 1
+inventory = []
 
 
 def terminate():
@@ -379,6 +380,75 @@ def rewards():
     information["hp"] += 2
     information["Fiz_dmg"] += 1
     information["Mag_dmg"] += 1
+
+    give_random_item()
+
+
+def give_random_item():
+    items = [
+        "sword1", "sword2", "sword3",
+        "staff1", "staff2",
+        "silver", "broom", "stone",
+        "gold_pile", "gold_coins", "wallet",
+        "helmet", "armor", "boots",
+        "strength_potion"
+    ]
+
+    random_item = random.choice(items)
+
+    if random_item.startswith("sword"):
+        information["Fiz_dmg"] += int(random_item[-1])
+        print(f"Ты получил {random_item} - Physical damage +{int(random_item[-1])}!")
+
+    elif random_item.startswith("staff"):
+        information["Mag_dmg"] += int(random_item[-1])
+        print(f"Ты получил {random_item} - Magical damage +{int(random_item[-1])}!")
+
+    elif random_item == "silver":
+        information["max_hp"] += 25
+        print(f"Ты получил {random_item} - Max HP +25!")
+
+    elif random_item == "broom":
+        information["max_hp"] += 15
+        print(f"Ты получил {random_item} - Max HP +15!")
+
+    elif random_item == "stone":
+        information["max_hp"] += 30
+        information["defence"] += 5
+        print(f"Ты получил {random_item} - Max HP +30, Defense +5!")
+
+    elif random_item == "gold_pile":
+        money += 30
+        print(f"Ты получил {random_item} - Money +30!")
+
+    elif random_item == "gold_coins":
+        money += 15
+        print(f"Ты получил {random_item} - Money +15!")
+
+    elif random_item == "wallet":
+        money += 50
+        print(f"Ты получил {random_item} - Money +50!")
+
+    elif random_item == "helmet":
+        information["defence"] += 3
+        print(f"Ты получил {random_item} - Defense +3!")
+
+    elif random_item == "armor":
+        information["defence"] += 7
+        print(f"Ты получил {random_item} - Defense +7!")
+
+    elif random_item == "boots":
+        information["defence"] += 5
+        print(f"Ты получил {random_item} - Defense +5!")
+
+    elif random_item == "strength_potion":
+        information["max_hp"] += 25
+        information["defence"] += 10
+        information["Fiz_dmg"] += 10
+        information["Mag_dmg"] += 10
+        print(f"Ты получил {random_item} - Max HP +25, Defense +10, Physical/Magical damage +10!")
+
+    inventory.append(random_item)
 
 
 while running:
