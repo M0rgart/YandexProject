@@ -231,6 +231,15 @@ def chest():
     all_sprites.add(Tree())
     all_sprites.draw(screen)
 
+    pygame.draw.rect(screen, (150, 150, 150),
+                     (100, 100, WIDTH - 200, HEIGHT - 200))
+
+    pygame.draw.rect(screen, (50, 50, 50),
+                     (150, 150, 508, 468))
+    pygame.draw.rect(screen, (50, 50, 50),
+                     (708, 150, 508, 468))
+
+
     pygame.display.flip()
     clock.tick(FPS)
 
