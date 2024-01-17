@@ -239,6 +239,8 @@ def chest():
     pygame.draw.rect(screen, (50, 50, 50),
                      (708, 150, 508, 468))
 
+    exit_button = small_font.render("Выход", True, (255, 0, 0))
+    screen.blit(exit_button, (1150, 700))
 
     pygame.display.flip()
     clock.tick(FPS)
@@ -259,7 +261,6 @@ def shop():
     all_sprites.add(x)
     all_sprites.draw(screen)
 
-    # Display player's money
     money_icon = pygame.transform.scale(
         pygame.image.load('money.png'), (50, 50))
     money_icon.set_colorkey((255, 255, 255))
@@ -268,23 +269,23 @@ def shop():
                                    True, (255, 255, 0))
     screen.blit(money_text, (80, 20))
 
-    # Display three random item images with prices
-    item_prices = [10, 10, 10]  # Assuming each item costs 10 coins
+    item_prices = [10, 10, 10]
     item_images = []
     for i in range(3):
-        item_image = pygame.image.load(f'{random.choice(inventory)}.png')
+        item_image = pygame.transform.scale(
+            pygame.image.load(f'{random.choice(inventory)}.png'),
+            (150, 150))
         item_images.append(item_image)
-        price_text = small_font.render(f"{item_prices[i]} монет", True, (255, 255, 0))
+        price_text = small_font.render(f"{item_prices[i]} монет",
+                                       True, (255, 255, 0))
         screen.blit(price_text, (200 + i * 300, 300))
 
     for i, item_image in enumerate(item_images):
         screen.blit(item_image, (200 + i * 300, 150))
 
-    # Display "Buy" button
     buy_button = small_font.render("Купить", True, (255, 0, 0))
     screen.blit(buy_button, ((WIDTH - buy_button.get_width()) // 2, 600))
 
-    # Display "Exit" button
     exit_button = small_font.render("Выход", True, (255, 0, 0))
     screen.blit(exit_button, (1150, 700))
 
@@ -357,9 +358,9 @@ def battle():
                             True, (255, 255, 0))
     screen.blit(mon, (1250, 20))
 
-    Hp = small_font.render(str(information["hp"]), True,
+    hp = small_font.render(str(information["hp"]), True,
                          (0, 255, 0))
-    screen.blit(Hp, (25, 15))
+    screen.blit(hp, (25, 15))
 
     enemy_hp = big_font.render(str(enemyInformation["Enemy_hp"]),
                                True, (150, 0, 0))
@@ -376,15 +377,64 @@ def boss_battle():
     all_sprites = pygame.sprite.Group()
     all_sprites.update()
 
+    if enemyInformation["Type"] == 0:
+        enemyInformation["Type"] ="god"
+        enemyInformation["Enemy_hp"] = 300
+        enemyInformation["Enemy_atc"] = 20
+
+    class Boss(pygame.sprite.Sprite):
+        def __init__(self):
+            pygame.sprite.Sprite.__init__(self)
+            self.image = pygame.transform.scale(
+                pygame.image.load('dragon.png'), (300, 300))
+            self.rect = self.image.get_rect()
+            self.rect.center = (WIDTH // 2, 550)
+
     class Tree(pygame.sprite.Sprite):
         def __init__(self):
             pygame.sprite.Sprite.__init__(self)
             self.image = pygame.image.load('background1.png')
-            self.rect = (1000, 500)
+            self.rect = self.image.get_rect()
 
-    bcg = Tree()
-    all_sprites.add(bcg)
+    class Shadow(pygame.sprite.Sprite):
+        def __init__(self):
+            pygame.sprite.Sprite.__init__(self)
+            self.image = pygame.Surface((50, 50))
+            self.image = pygame.transform.scale(
+                pygame.image.load("shadow.png"), (375, 375))
+            self.rect = self.image.get_rect()
+            self.rect.center = (WIDTH // 2 + 10, 575)
+
+    class Money(pygame.sprite.Sprite):
+        def __init__(self):
+            pygame.sprite.Sprite.__init__(self)
+            self.image = pygame.transform.scale(
+                pygame.image.load('money.png'), (50, 50))
+            self.image.set_colorkey((255, 255, 255))
+            self.rect = self.image.get_rect()
+            self.rect.center = (1325, 35)
+
+    all_sprites = pygame.sprite.Group()
+    all_sprites.add(Tree())
+    all_sprites.add(Shadow())
+    all_sprites.add(Money())
+    all_sprites.add(Boss())
     all_sprites.draw(screen)
+
+    mon = small_font.render(str(information["money"]),
+                            True, (255, 255, 0))
+    screen.blit(mon, (1250, 20))
+
+    hp = small_font.render(str(information["hp"]), True,
+                           (0, 255, 0))
+    screen.blit(hp, (25, 15))
+
+    enemy_hp = big_font.render(str(enemyInformation["Enemy_hp"]),
+                               True, (150, 0, 0))
+    screen.blit(enemy_hp, (WIDTH // 2 - 50, 300))
+
+    atc_btn = big_font.render("Атаковать", True, (255, 0, 0))
+    screen.blit(atc_btn, ((WIDTH - atc_btn.get_width()) // 2, 10))
 
     pygame.display.flip()
     clock.tick(FPS)
@@ -412,6 +462,50 @@ def rewards():
 
     give_random_item()
 
+
+def the_end():
+    all_sprites = pygame.sprite.Group()
+    all_sprites.update()
+
+    class Tree(pygame.sprite.Sprite):
+        def __init__(self):
+            pygame.sprite.Sprite.__init__(self)
+            self.image = pygame.image.load('background2.png')
+            self.rect = self.image.get_rect()
+
+    class Slime1(pygame.sprite.Sprite):
+        def __init__(self):
+            pygame.sprite.Sprite.__init__(self)
+            self.image = pygame.image.load('enemy1.png')
+            self.rect = self.image.get_rect()
+            self.rect.center = (200, 625)
+
+    class Slime2(pygame.sprite.Sprite):
+        def __init__(self):
+            pygame.sprite.Sprite.__init__(self)
+            self.image = pygame.image.load('enemy2.png')
+            self.rect = self.image.get_rect()
+            self.rect.center = (700, 625)
+
+    class Slime3(pygame.sprite.Sprite):
+        def __init__(self):
+            pygame.sprite.Sprite.__init__(self)
+            self.image = pygame.image.load('enemy4.png')
+            self.rect = self.image.get_rect()
+            self.rect.center = (1200, 625)
+
+    all_sprites = pygame.sprite.Group()
+    all_sprites.add(Tree())
+    all_sprites.add(Slime1())
+    all_sprites.add(Slime2())
+    all_sprites.add(Slime3())
+    all_sprites.draw(screen)
+
+    end = big_font.render("You Win", True, (255, 0, 0))
+    screen.blit(end, ((WIDTH - end.get_width()) // 2, HEIGHT // 2))
+
+    pygame.display.flip()
+    clock.tick(FPS)
 
 def give_random_item():
     items = [
@@ -516,7 +610,8 @@ while running:
                     game_moment = room_generator()
                 else:
                     pass
-            elif game_moment == "battle":
+                room_num += 1
+            elif game_moment == "battle" or game_moment == "boss_battle":
                 if WIDTH // 2 - 125 <= mouse[0] <= WIDTH // 2 + 125 \
                  and 25 <= mouse[1] <= 100:
                     if information["Fiz_dmg"] > information["Mag_dmg"]:
@@ -524,21 +619,28 @@ while running:
                     else:
                         enemyInformation["Enemy_hp"] -= information["Mag_dmg"]
                     if enemyInformation["Enemy_hp"] <= 0:
-                        enemyInformation = {"Enemy_hp": 0, "Enemy_atc": 0,
-                                            "Type": 0}
-                        information["money"] += random.randint(1, 5)
-                        rewards()
-                        game_moment = room_generator()
+                        if game_moment == "battle":
+                            enemyInformation = {"Enemy_hp": 0, "Enemy_atc": 0,
+                                                "Type": 0}
+                            information["money"] += random.randint(1, 5)
+                            rewards()
+                            game_moment = room_generator()
+                            room_num += 1
+                        else:
+                            game_moment = "end"
                     else:
                         dmg = enemyInformation["Enemy_atc"] - \
                               information["defence"]
                         if dmg > 0:
                             information["hp"] -= dmg
-                    print(information)
-                    print(enemyInformation)
             elif game_moment == "shop":
                 if 1150 <= mouse[0] <= WIDTH and 700 <= mouse[1] <= 750:
                     game_moment = room_generator()
+                    room_num += 1
+            elif game_moment == "chest":
+                if 1150 <= mouse[0] <= WIDTH and 700 <= mouse[1] <= 750:
+                    game_moment = room_generator()
+                    room_num += 1
 
     if game_moment == "start":
         start_screen()
@@ -554,7 +656,10 @@ while running:
         choose()
     elif game_moment == "rewards":
         rewards()
+    elif game_moment == "end":
+        the_end()
 
     pygame.display.flip()
     clock.tick(FPS)
+
 terminate()
