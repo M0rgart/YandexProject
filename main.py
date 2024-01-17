@@ -17,9 +17,8 @@ game_moment = "start"
 big_font = pygame.font.SysFont("comicsansms", 70)
 small_font = pygame.font.SysFont("kacstbook", 60)
 information = {"class": False, "Fiz_dmg": False, "hp": False, "defence": False,
-               "Mag_dmg": False, "LVL": False, "max_hp": False}
+               "Mag_dmg": False, "LVL": False, "max_hp": False, "money": 5}
 enemyInformation = {"Enemy_hp": 0, "Enemy_atc": 0, "Type": 0}
-money = 5
 room_num = 0
 location = 1
 inventory = []
@@ -250,7 +249,7 @@ def shop():
     x = Tree()
     all_sprites.add(x)
     all_sprites.draw(screen)
-    screen.blit(small_font.render(str(money), True,
+    screen.blit(small_font.render(str(information["money"]), True,
                             (255, 255, 0)), (1250, 20))
     hp = small_font.render(str(information["hp"]), True,
                            (0, 255, 0))
@@ -325,7 +324,8 @@ def battle():
     all_sprites.add(Money())
     all_sprites.draw(screen)
 
-    mon = small_font.render(str(money), True, (255, 255, 0))
+    mon = small_font.render(str(information["money"]),
+                            True, (255, 255, 0))
     screen.blit(mon, (1250, 20))
 
     Hp = small_font.render(str(information["hp"]), True,
@@ -398,11 +398,13 @@ def give_random_item():
 
     if random_item.startswith("sword"):
         information["Fiz_dmg"] += int(random_item[-1])
-        print(f"Ты получил {random_item} - Physical damage +{int(random_item[-1])}!")
+        print(f"Ты получил {random_item} - Physical damage + "
+              f"{int(random_item[-1])}!")
 
     elif random_item.startswith("staff"):
         information["Mag_dmg"] += int(random_item[-1])
-        print(f"Ты получил {random_item} - Magical damage +{int(random_item[-1])}!")
+        print(f"Ты получил {random_item} - Magical damage + "
+              f"{int(random_item[-1])}!")
 
     elif random_item == "silver":
         information["max_hp"] += 25
@@ -418,15 +420,15 @@ def give_random_item():
         print(f"Ты получил {random_item} - Max HP +30, Defense +5!")
 
     elif random_item == "gold_pile":
-        money += 30
+        information["money"] += 30
         print(f"Ты получил {random_item} - Money +30!")
 
     elif random_item == "gold_coins":
-        money += 15
+        information["money"] += 15
         print(f"Ты получил {random_item} - Money +15!")
 
     elif random_item == "wallet":
-        money += 50
+        information["money"] += 50
         print(f"Ты получил {random_item} - Money +50!")
 
     elif random_item == "helmet":
@@ -446,7 +448,8 @@ def give_random_item():
         information["defence"] += 10
         information["Fiz_dmg"] += 10
         information["Mag_dmg"] += 10
-        print(f"Ты получил {random_item} - Max HP +25, Defense +10, Physical/Magical damage +10!")
+        print(f"Ты получил {random_item} - Max HP +25, Defense +10, "
+              f"Physical/Magical damage +10!")
 
     inventory.append(random_item)
 
@@ -494,7 +497,7 @@ while running:
                     if enemyInformation["Enemy_hp"] <= 0:
                         enemyInformation = {"Enemy_hp": 0, "Enemy_atc": 0,
                                             "Type": 0}
-                        money += random.randint(1, 5)
+                        information["money"] += random.randint(1, 5)
                         rewards()
                         game_moment = room_generator()
                     else:
