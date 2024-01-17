@@ -258,15 +258,35 @@ def shop():
     x = Tree()
     all_sprites.add(x)
     all_sprites.draw(screen)
-    screen.blit(small_font.render(str(information["money"]), True,
-                            (255, 255, 0)), (1250, 20))
-    hp = small_font.render(str(information["hp"]), True,
-                           (0, 255, 0))
-    screen.blit(hp, (25, 15))
-    screen.blit(small_font.render("Покинуть", True,
-                                (255, 0, 0)), (1150, 700))
-    screen.blit(small_font.render("магазин", True,
-                                  (255, 0, 0)), (1150, 725))
+
+    # Display player's money
+    money_icon = pygame.transform.scale(
+        pygame.image.load('money.png'), (50, 50))
+    money_icon.set_colorkey((255, 255, 255))
+    screen.blit(money_icon, (25, 15))
+    money_text = small_font.render(str(information["money"]),
+                                   True, (255, 255, 0))
+    screen.blit(money_text, (80, 20))
+
+    # Display three random item images with prices
+    item_prices = [10, 10, 10]  # Assuming each item costs 10 coins
+    item_images = []
+    for i in range(3):
+        item_image = pygame.image.load(f'{random.choice(inventory)}.png')
+        item_images.append(item_image)
+        price_text = small_font.render(f"{item_prices[i]} монет", True, (255, 255, 0))
+        screen.blit(price_text, (200 + i * 300, 300))
+
+    for i, item_image in enumerate(item_images):
+        screen.blit(item_image, (200 + i * 300, 150))
+
+    # Display "Buy" button
+    buy_button = small_font.render("Купить", True, (255, 0, 0))
+    screen.blit(buy_button, ((WIDTH - buy_button.get_width()) // 2, 600))
+
+    # Display "Exit" button
+    exit_button = small_font.render("Выход", True, (255, 0, 0))
+    screen.blit(exit_button, (1150, 700))
 
     pygame.display.flip()
     clock.tick(FPS)
