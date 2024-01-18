@@ -227,7 +227,7 @@ def lvl_up():
 
 def chest():
     all_sprites = pygame.sprite.Group()
-    all_sprites.update()
+
 
     class Tree(pygame.sprite.Sprite):
         def __init__(self):
@@ -235,24 +235,19 @@ def chest():
             self.image = pygame.image.load(f'chest{location}.png')
             self.rect = self.image.get_rect()
 
-    all_sprites = pygame.sprite.Group()
     all_sprites.add(Tree())
     all_sprites.draw(screen)
 
-    item1 = choose_random_item()
-    item2 = choose_random_item()
+    if "chest_items" not in information:
+        information["chest_items"] = choose_random_item()
+
+    item1 = information["chest_items"]
 
     item1_icon = pygame.image.load(f'{item1}.png')
-    screen.blit(item1_icon, (WIDTH // 4 - item1_icon.get_width() // 2, HEIGHT // 3))
+    screen.blit(item1_icon, (WIDTH // 2 - item1_icon.get_width() // 2, HEIGHT // 3))
 
     choose_button1 = small_font.render("Выбрать предмет", True, (255, 0, 0))
-    screen.blit(choose_button1, (WIDTH // 4 - choose_button1.get_width() // 2, HEIGHT // 2))
-
-    item2_icon = pygame.image.load(f'{item2}.png')
-    screen.blit(item2_icon, (WIDTH // 2 + (WIDTH // 4 - item2_icon.get_width() // 2), HEIGHT // 3))
-
-    choose_button2 = small_font.render("Выбрать предмет", True, (255, 0, 0))
-    screen.blit(choose_button2, (WIDTH // 2 + (WIDTH // 4 - choose_button2.get_width() // 2), HEIGHT // 2))
+    screen.blit(choose_button1, (WIDTH // 2 - choose_button1.get_width() // 2, HEIGHT // 2))
 
     exit_button = small_font.render("Выход", True, (255, 0, 0))
     screen.blit(exit_button, (WIDTH - exit_button.get_width() - 20, HEIGHT - exit_button.get_height() - 20))
@@ -260,18 +255,10 @@ def chest():
     pygame.display.flip()
     clock.tick(FPS)
 
-    chest_item = [item1, item2]
+    chest_item = [item1]
+    inventory.append(item1)
 
     return chest_item
-
-    inventory.append(chosen_item)
-    print(f"Ты получил предмет: {chosen_item}")
-
-    all_sprites.draw(screen)
-    pygame.display.flip()
-    clock.tick(FPS)
-
-
 
 
 def choose_random_item():
@@ -697,7 +684,7 @@ while running:
                     chosen_item = chest()[0]
                     game_moment = room_generator()
                 elif WIDTH // 2 <= mouse[0] <= WIDTH and 0 <= mouse[1] <= HEIGHT:
-                    chosen_item = chest()[1]
+                    chosen_item = chest()
                     game_moment = room_generator()
 
 
