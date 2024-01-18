@@ -280,7 +280,7 @@ def shop():
     if "shop_items" not in information:
         information["shop_items"] = generate_shop_items()
 
-    item_images, item_prices, item_bought, item_names = information["shop_items"]
+    item_images, item_prices, item_bought = information["shop_items"]
 
     for i, item_image in enumerate(item_images):
         if not item_bought[i]:
@@ -289,7 +289,7 @@ def shop():
             screen.blit(item_image, (200 + i * 300, 150))
 
             buy_button = small_font.render("Купить", True, (255, 0, 0))
-            button_rect = buy_button.get_rect(center=(350 + i * 300, 500))
+            button_rect = buy_button.get_rect(center=(300 + i * 300, 500))
             screen.blit(buy_button, button_rect.topleft)
 
             mouse = pygame.mouse.get_pos()
@@ -298,8 +298,8 @@ def shop():
                     if information["money"] >= item_prices[i]:
                         information["money"] -= item_prices[i]
 
-                        inventory.append(item_names[i])
-                        print(f"Ты купил предмет {item_names[i]} за {item_prices[i]} монет.")
+                        inventory.append(f'item{i + 1}.png')
+                        print(f"Ты купил предмет {i + 1} за {item_prices[i]} монет.")
 
                         item_bought[i] = True
 
@@ -308,6 +308,7 @@ def shop():
 
     pygame.display.flip()
     clock.tick(FPS)
+
 
 def generate_shop_items():
     num_items = 3
