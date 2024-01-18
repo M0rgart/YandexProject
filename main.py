@@ -239,21 +239,20 @@ def chest():
     all_sprites.add(Tree())
     all_sprites.draw(screen)
 
-    # Choose two random items
     item1 = choose_random_item()
     item2 = choose_random_item()
 
     item1_icon = pygame.image.load(f'{item1}.png')
-    screen.blit(item1_icon, (150 + (WIDTH // 4 - item1_icon.get_width() // 2), HEIGHT // 3))
+    screen.blit(item1_icon, (WIDTH // 4 - item1_icon.get_width() // 2, HEIGHT // 3))
 
     choose_button1 = small_font.render("Выбрать предмет", True, (255, 0, 0))
-    screen.blit(choose_button1, (150 + (WIDTH // 4 - choose_button1.get_width() // 2), HEIGHT // 2))
+    screen.blit(choose_button1, (WIDTH // 4 - choose_button1.get_width() // 2, HEIGHT // 2))
 
     item2_icon = pygame.image.load(f'{item2}.png')
-    screen.blit(item2_icon, (WIDTH // 2 + 150 + (WIDTH // 4 - item2_icon.get_width() // 2), HEIGHT // 3))
+    screen.blit(item2_icon, (WIDTH // 2 + (WIDTH // 4 - item2_icon.get_width() // 2), HEIGHT // 3))
 
     choose_button2 = small_font.render("Выбрать предмет", True, (255, 0, 0))
-    screen.blit(choose_button2, (WIDTH // 2 + 150 + (WIDTH // 4 - choose_button2.get_width() // 2), HEIGHT // 2))
+    screen.blit(choose_button2, (WIDTH // 2 + (WIDTH // 4 - choose_button2.get_width() // 2), HEIGHT // 2))
 
     exit_button = small_font.render("Выход", True, (255, 0, 0))
     screen.blit(exit_button, (WIDTH - exit_button.get_width() - 20, HEIGHT - exit_button.get_height() - 20))
@@ -261,25 +260,18 @@ def chest():
     pygame.display.flip()
     clock.tick(FPS)
 
-    while True:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                terminate()
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-                mouse = pygame.mouse.get_pos()
-                if 150 <= mouse[0] <= WIDTH // 2 - 150 and HEIGHT // 2 <= mouse[1] <= HEIGHT // 2 + 50:
-                    chosen_item = item1
-                    break
-                elif WIDTH // 2 + 150 <= mouse[0] <= WIDTH - 150 and HEIGHT // 2 <= mouse[1] <= HEIGHT // 2 + 50:
-                    chosen_item = item2
-                    break
+    chest_item = [item1, item2]
+
+    return chest_item
+
+    inventory.append(chosen_item)
+    print(f"Ты получил предмет: {chosen_item}")
 
     all_sprites.draw(screen)
     pygame.display.flip()
     clock.tick(FPS)
 
-    inventory.append(chosen_item)
-    print(f"Ты получил предмет: {chosen_item}")
+
 
 
 def choose_random_item():
@@ -701,6 +693,13 @@ while running:
                 if 1150 <= mouse[0] <= WIDTH and 700 <= mouse[1] <= 750:
                     game_moment = room_generator()
                     room_num += 1
+                elif 0 <= mouse[0] <= WIDTH // 2 and 0 <= mouse[1] <= HEIGHT:
+                    chosen_item = chest()[0]
+                    game_moment = room_generator()
+                elif WIDTH // 2 <= mouse[0] <= WIDTH and 0 <= mouse[1] <= HEIGHT:
+                    chosen_item = chest()[1]
+                    game_moment = room_generator()
+
 
     if game_moment == "start":
         start_screen()
