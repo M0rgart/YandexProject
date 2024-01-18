@@ -239,19 +239,51 @@ def chest():
     all_sprites.add(Tree())
     all_sprites.draw(screen)
 
-    pygame.draw.rect(screen, (150, 150, 150),
-                     (100, 100, WIDTH - 200, HEIGHT - 200))
+    # Choose two random items
+    item1 = choose_random_item()
+    item2 = choose_random_item()
 
-    pygame.draw.rect(screen, (50, 50, 50),
-                     (150, 150, 508, 468))
-    pygame.draw.rect(screen, (50, 50, 50),
-                     (708, 150, 508, 468))
+    item1_icon = pygame.image.load(f'{item1}.png')
+    screen.blit(item1_icon, (150 + (WIDTH // 4 - item1_icon.get_width() // 2), HEIGHT // 3))
+
+    choose_button1 = small_font.render("Выбрать предмет", True, (255, 0, 0))
+    screen.blit(choose_button1, (150 + (WIDTH // 4 - choose_button1.get_width() // 2), HEIGHT // 2))
+
+    item2_icon = pygame.image.load(f'{item2}.png')
+    screen.blit(item2_icon, (WIDTH // 2 + 150 + (WIDTH // 4 - item2_icon.get_width() // 2), HEIGHT // 3))
+
+    choose_button2 = small_font.render("Выбрать предмет", True, (255, 0, 0))
+    screen.blit(choose_button2, (WIDTH // 2 + 150 + (WIDTH // 4 - choose_button2.get_width() // 2), HEIGHT // 2))
 
     exit_button = small_font.render("Выход", True, (255, 0, 0))
-    screen.blit(exit_button, (1150, 700))
+    screen.blit(exit_button, (WIDTH - exit_button.get_width() - 20, HEIGHT - exit_button.get_height() - 20))
 
     pygame.display.flip()
     clock.tick(FPS)
+
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                terminate()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                mouse = pygame.mouse.get_pos()
+                if 150 <= mouse[0] <= WIDTH // 2 - 150 and HEIGHT // 2 <= mouse[1] <= HEIGHT // 2 + 50:
+                    chosen_item = item1
+                    break
+                elif WIDTH // 2 + 150 <= mouse[0] <= WIDTH - 150 and HEIGHT // 2 <= mouse[1] <= HEIGHT // 2 + 50:
+                    chosen_item = item2
+                    break
+
+    all_sprites.draw(screen)
+    pygame.display.flip()
+    clock.tick(FPS)
+
+    inventory.append(chosen_item)
+    print(f"Ты получил предмет: {chosen_item}")
+
+
+def choose_random_item():
+    return random.choice(items)
 
 
 def shop():
@@ -280,7 +312,7 @@ def shop():
     if "shop_items" not in information:
         information["shop_items"] = generate_shop_items()
 
-    item_images, item_prices, item_bought = information["shop_items"]
+    item_images, item_prices, item_bought, item_names = information["shop_items"]
 
     for i, item_image in enumerate(item_images):
         if not item_bought[i]:
@@ -289,7 +321,7 @@ def shop():
             screen.blit(item_image, (200 + i * 300, 150))
 
             buy_button = small_font.render("Купить", True, (255, 0, 0))
-            button_rect = buy_button.get_rect(center=(300 + i * 300, 500))
+            button_rect = buy_button.get_rect(center=(350 + i * 300, 500))
             screen.blit(buy_button, button_rect.topleft)
 
             mouse = pygame.mouse.get_pos()
@@ -298,8 +330,8 @@ def shop():
                     if information["money"] >= item_prices[i]:
                         information["money"] -= item_prices[i]
 
-                        inventory.append(f'item{i + 1}.png')
-                        print(f"Ты купил предмет {i + 1} за {item_prices[i]} монет.")
+                        inventory.append(item_names[i])
+                        print(f"Ты купил предмет {item_names[i]} за {item_prices[i]} монет.")
 
                         item_bought[i] = True
 
@@ -314,17 +346,18 @@ def generate_shop_items():
     num_items = 3
     item_images = []
     item_prices = []
+    item_names = []
     item_bought = [False] * num_items
 
     for _ in range(num_items):
-        item_name = f'{random.choice(items)}.png'
-        item_image = pygame.image.load(item_name)
+        item_name = random.choice(items)
+        item_image = pygame.image.load(f'{item_name}.png')
         item_price = random.randint(10, 30)
 
         item_images.append(item_image)
         item_prices.append(item_price)
-
-    return item_images, item_prices, item_bought
+        item_names.append(item_name)
+    return item_images, item_prices, item_bought, item_names
 
 
 def battle():
