@@ -22,6 +22,14 @@ enemyInformation = {"Enemy_hp": 0, "Enemy_atc": 0, "Type": 0}
 room_num = 0
 location = 1
 inventory = []
+items = [
+        "sword1", "sword2", "sword3",
+        "staff1", "staff2",
+        "silver", "broom", "stone",
+        "gold_pile", "gold_coins", "wallet",
+        "helmet", "armor", "boots",
+        "strength_potion"
+    ]
 
 
 def terminate():
@@ -269,28 +277,55 @@ def shop():
                                    True, (255, 255, 0))
     screen.blit(money_text, (80, 20))
 
-    item_prices = [10, 10, 10]
-    item_images = []
-    for i in range(3):
-        item_image = pygame.transform.scale(
-            pygame.image.load(f'{random.choice(inventory)}.png'),
-            (150, 150))
-        item_images.append(item_image)
-        price_text = small_font.render(f"{item_prices[i]} монет",
-                                       True, (255, 255, 0))
-        screen.blit(price_text, (200 + i * 300, 300))
+    if "shop_items" not in information:
+        information["shop_items"] = generate_shop_items()
+
+    item_images, item_prices, item_bought = information["shop_items"]
 
     for i, item_image in enumerate(item_images):
-        screen.blit(item_image, (200 + i * 300, 150))
+        if not item_bought[i]:
+            price_text = small_font.render(f"{item_prices[i]} монет", True, (255, 255, 0))
+            screen.blit(price_text, (200 + i * 300, 300))
+            screen.blit(item_image, (200 + i * 300, 150))
 
-    buy_button = small_font.render("Купить", True, (255, 0, 0))
-    screen.blit(buy_button, ((WIDTH - buy_button.get_width()) // 2, 600))
+            # Display "Buy" button
+            buy_button = small_font.render("Купить", True, (255, 0, 0))
+            button_rect = buy_button.get_rect(center=(350 + i * 300, 500))
+            screen.blit(buy_button, button_rect.topleft)
+
+            mouse = pygame.mouse.get_pos()
+            if button_rect.collidepoint(mouse):
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if information["money"] >= item_prices[i]:
+                        information["money"] -= item_prices[i]
+
+                        inventory.append(f'item{i + 1}.png')  # Example item name
+                        print(f"Ты купил предмет {i + 1} за {item_prices[i]} монет.")
+
+                        item_bought[i] = True
 
     exit_button = small_font.render("Выход", True, (255, 0, 0))
     screen.blit(exit_button, (1150, 700))
 
     pygame.display.flip()
     clock.tick(FPS)
+
+
+def generate_shop_items():
+    num_items = 3
+    item_images = []
+    item_prices = []
+    item_bought = [False] * num_items
+
+    for _ in range(num_items):
+        item_name = f'{random.choice(items)}.png'
+        item_image = pygame.image.load(item_name)
+        item_price = random.randint(10, 30)
+
+        item_images.append(item_image)
+        item_prices.append(item_price)
+
+    return item_images, item_prices, item_bought
 
 
 def battle():
@@ -507,15 +542,8 @@ def the_end():
     pygame.display.flip()
     clock.tick(FPS)
 
+
 def give_random_item():
-    items = [
-        "sword1", "sword2", "sword3",
-        "staff1", "staff2",
-        "silver", "broom", "stone",
-        "gold_pile", "gold_coins", "wallet",
-        "helmet", "armor", "boots",
-        "strength_potion"
-    ]
 
     random_item = random.choice(items)
 
