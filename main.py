@@ -48,8 +48,7 @@ def start_screen():
             self.rect = self.image.get_rect()
 
     all_sprites = pygame.sprite.Group()
-    bcg = Tree()
-    all_sprites.add(bcg)
+    all_sprites.add(Tree())
     all_sprites.draw(screen)
 
     game = big_font.render("Название игры",
@@ -193,6 +192,7 @@ def choose():
 def open_inventory():
     all_sprites = pygame.sprite.Group()
     all_sprites.update()
+
     class Tree(pygame.sprite.Sprite):
         def __init__(self):
             pygame.sprite.Sprite.__init__(self)
@@ -228,7 +228,6 @@ def lvl_up():
 def chest():
     all_sprites = pygame.sprite.Group()
 
-
     class Tree(pygame.sprite.Sprite):
         def __init__(self):
             pygame.sprite.Sprite.__init__(self)
@@ -238,19 +237,27 @@ def chest():
     all_sprites.add(Tree())
     all_sprites.draw(screen)
 
+    pygame.draw.rect(screen, (50, 50, 50),
+                     (WIDTH // 2 - 80, HEIGHT // 2 - 130, 160, 160))
+    pygame.draw.rect(screen, (150, 150, 150),
+                     (WIDTH // 2 - 75, HEIGHT // 2 - 125, 150, 150))
+
     if "chest_items" not in information:
         information["chest_items"] = choose_random_item()
 
     item1 = information["chest_items"]
 
     item1_icon = pygame.image.load(f'{item1}.png')
-    screen.blit(item1_icon, (WIDTH // 2 - item1_icon.get_width() // 2, HEIGHT // 3))
+    screen.blit(item1_icon, (WIDTH // 2 - item1_icon.get_width() // 2,
+                             HEIGHT // 3))
 
-    choose_button1 = small_font.render("Выбрать предмет", True, (255, 0, 0))
-    screen.blit(choose_button1, (WIDTH // 2 - choose_button1.get_width() // 2, HEIGHT // 2))
+    choose_button1 = small_font.render("Забрать предмет", True, (255, 0, 0))
+    screen.blit(choose_button1, (
+        WIDTH // 2 - choose_button1.get_width() // 2, HEIGHT // 2 + 50))
 
     exit_button = small_font.render("Выход", True, (255, 0, 0))
-    screen.blit(exit_button, (WIDTH - exit_button.get_width() - 20, HEIGHT - exit_button.get_height() - 20))
+    screen.blit(exit_button, (WIDTH - exit_button.get_width() - 20,
+                              HEIGHT - exit_button.get_height() - 20))
 
     pygame.display.flip()
     clock.tick(FPS)
@@ -291,11 +298,13 @@ def shop():
     if "shop_items" not in information:
         information["shop_items"] = generate_shop_items()
 
-    item_images, item_prices, item_bought, item_names = information["shop_items"]
+    item_images, item_prices, item_bought, item_names = (
+        information)["shop_items"]
 
     for i, item_image in enumerate(item_images):
         if not item_bought[i]:
-            price_text = small_font.render(f"{item_prices[i]} монет", True, (255, 255, 0))
+            price_text = small_font.render(f"{item_prices[i]} монет",
+                                           True, (255, 255, 0))
             screen.blit(price_text, (200 + i * 300, 300))
             screen.blit(item_image, (200 + i * 300, 150))
 
@@ -310,7 +319,8 @@ def shop():
                         information["money"] -= item_prices[i]
 
                         inventory.append(item_names[i])
-                        print(f"Ты купил предмет {item_names[i]} за {item_prices[i]} монет.")
+                        print(f"Ты купил предмет {item_names[i]} за "
+                              f"{item_prices[i]} монет.")
 
                         item_bought[i] = True
 
@@ -405,7 +415,7 @@ def battle():
     screen.blit(mon, (1250, 20))
 
     hp = small_font.render(str(information["hp"]), True,
-                         (0, 255, 0))
+                           (0, 255, 0))
     screen.blit(hp, (25, 15))
 
     enemy_hp = big_font.render(str(enemyInformation["Enemy_hp"]),
@@ -424,9 +434,10 @@ def boss_battle():
     all_sprites.update()
 
     if enemyInformation["Type"] == 0:
-        enemyInformation["Type"] ="god"
+        enemyInformation["Type"] = "god"
         enemyInformation["Enemy_hp"] = 300
         enemyInformation["Enemy_atc"] = 20
+        information["hp"] == information["max_hp"]
 
     class Boss(pygame.sprite.Sprite):
         def __init__(self):
@@ -672,6 +683,8 @@ while running:
                               information["defence"]
                         if dmg > 0:
                             information["hp"] -= dmg
+                            if information["hp"] <= 0:
+                                terminate()
             elif game_moment == "shop":
                 if 1150 <= mouse[0] <= WIDTH and 700 <= mouse[1] <= 750:
                     game_moment = room_generator()
@@ -683,10 +696,10 @@ while running:
                 elif 0 <= mouse[0] <= WIDTH // 2 and 0 <= mouse[1] <= HEIGHT:
                     chosen_item = chest()[0]
                     game_moment = room_generator()
-                elif WIDTH // 2 <= mouse[0] <= WIDTH and 0 <= mouse[1] <= HEIGHT:
+                elif (WIDTH // 2 <= mouse[0] <= WIDTH and 0 <= mouse[1] <=
+                      HEIGHT):
                     chosen_item = chest()
                     game_moment = room_generator()
-
 
     if game_moment == "start":
         start_screen()
